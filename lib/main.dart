@@ -45,6 +45,7 @@ class _PetWorldPageState extends State<PetWorldPage> {
   ScrollController? controller;
   List<Pet> items = [];
   String searchParam = '';
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -59,6 +60,12 @@ class _PetWorldPageState extends State<PetWorldPage> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -92,6 +99,7 @@ class _PetWorldPageState extends State<PetWorldPage> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            controller: textEditingController,
                             onChanged: (val) async {
                               searchParam = val;
                               if (val.length >= 3) {
@@ -240,7 +248,7 @@ class _PetWorldPageState extends State<PetWorldPage> {
       setState(() {
         isLoading = true;
       });
-      List<Pet> morePets = await petWorldService.getAllAnimals(limit: limit, page: page + 1, sort: desc ? Strings.DESC : Strings.ASC);
+      List<Pet> morePets = await petWorldService.getAllAnimals(limit: limit, page: page + 1, sort: desc ? Strings.DESC : Strings.ASC, searchParam: searchParam);
       petList.addAll(morePets);
       setState(() {
         isLoading = false;
